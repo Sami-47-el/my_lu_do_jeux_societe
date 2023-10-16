@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello GameController!{% endblock %}
+
+{% block body %}
+    <h1>
+        Liste des jeux
+    </h1>
+    <article class="container">
+        {% for game in games %}
+        <h2>
+            {{ game.name }}
+        </h2>
+        <p>
+            {{ game.content }}
+        </p>
+        <h2>
+            {{ game.description }}
+        </h2>
+        <h2>
+            {{ game.date | format_date(locale='fr') }}
+        </h2>
+        <h2>
+            {{ game.picture }}
+        </h2>
+        <h2>
+            {{ game.players }}
+        </h2>
+        <h2>
+            {{ game.age }}
+        </h2>
+        <h2>
+            {{ game.time }}
+        </h2>
+        <h2>
+            {{ game.link }}
+        </h2>
+        {% endfor %}
+    </article>
+{% endblock %}
