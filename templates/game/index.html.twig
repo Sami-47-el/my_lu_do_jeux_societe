@@ -20,9 +20,9 @@
         <h2>
             {{ game.date | format_date(locale='fr') }}
         </h2>
-        <h2>
-            {{ game.picture }}
-        </h2>
+        <img src="Uploads/{{ game.picture }}">
+        
+        
         <h2>
             {{ game.players }}
         </h2>

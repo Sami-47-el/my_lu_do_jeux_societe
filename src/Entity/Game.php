@@ -28,8 +28,8 @@ class Game
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $date = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $picture = null;
+    #[ORM\Column(type: 'string')]
+    private string $picture;
 
     #[ORM\Column]
     private ?int $players = null;
@@ -116,7 +116,7 @@ class Game
         return $this->picture;
     }
 
-    public function setPicture(string $picture): static
+    public function setPicture(string $picture): self
     {
         $this->picture = $picture;
 
