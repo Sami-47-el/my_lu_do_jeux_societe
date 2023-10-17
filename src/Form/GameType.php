@@ -18,13 +18,12 @@ class GameType extends AbstractType
             ->add('content')
             ->add('description')
             ->add('date')
-            ->add('picture', FileType::class)
+            ->add('picture', FileType::class, ['mapped'=>false,'required'=>false])
             ->add('players')
             ->add('age')
             ->add('time')
             ->add('link')
             ->add('category')
-            ->add('user')
             ->add('save', SubmitType::class)
         ;
     }

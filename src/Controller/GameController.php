@@ -12,6 +12,7 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\File\File;
 
 class GameController extends AbstractController
 {
@@ -24,6 +25,7 @@ class GameController extends AbstractController
         return $this->render('game/index.html.twig', [
             'games' => $game,
         ]);
+
     }
 
     #[Route('/game/new', name: 'app_game_new')]
@@ -36,19 +38,19 @@ class GameController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
              /** @var UploadedFile $brochureFile */
-             $brochureFile = $form->get('picture')->getData();
+             $pictureFile = $form->get('picture')->getData();
 
              // this condition is needed because the 'brochure' field is not required
              // so the PDF file must be processed only when a file is uploaded
-             if ($brochureFile) {
-                 $originalFilename = pathinfo($brochureFile->getClientOriginalName(), PATHINFO_FILENAME);
+             if ($pictureFile) {
+                 $originalFilename = pathinfo($pictureFile->getClientOriginalName(), PATHINFO_FILENAME);
                  // this is needed to safely include the file name as part of the URL
                  $safeFilename = $slugger->slug($originalFilename);
-                 $newFilename = $safeFilename.'-'.uniqid().'.'.$brochureFile->guessExtension();
+                 $newFilename = $safeFilename.'-'.uniqid().'.'.$pictureFile->guessExtension();
  
                  // Move the file to the directory where brochures are stored
                  try {
-                     $brochureFile->move(
+                     $pictureFile->move(
                          $this->getParameter('brochures_directory'),
                          $newFilename
                      );
@@ -69,6 +71,80 @@ class GameController extends AbstractController
         return $this->render('game/new.html.twig', [
             'form' => $form
         ]);   
-}
+   }
+
+   #[Route('/game/{id}', name:'app_game_show')]
+    public function show(EntityManagerInterface $em, int $id) : Response
+    {
+        $games = $em->getRepository(Game::class);
+        $game = $games->find($id);
+        return $this->render('game/show.html.twig', [
+            'game' => $game,
+
+        ]);
+    }
+
+    #[Route('/game/edit/{id}', name:'app_game_edit')]
+    public function update(Request $request, EntityManagerInterface $em,  int $id , SluggerInterface $slugger): Response
+    {
+        $games = $em->getRepository(Game::class) ;
+        $game = $games->find($id);
+        $form = $this->createForm(GameType::class, $game);
+        $form->handleRequest($request);
+        dump($game->getPicture());
+
+        
+
+        if ($form->isSubmitted() && $form->isValid()) {
+             /** @var UploadedFile $brochureFile */
+             $pictureFile = $form->get('picture')->getData();
+
+
+
+             // this condition is needed because the 'brochure' field is not required
+             // so the PDF file must be processed only when a file is uploaded
+            if ($pictureFile) {
+                 $originalFilename = pathinfo($pictureFile->getClientOriginalName(), PATHINFO_FILENAME);
+                 // this is needed to safely include the file name as part of the URL
+                 $safeFilename = $slugger->slug($originalFilename);
+                 $newFilename = $safeFilename.'-'.uniqid().'.'.$pictureFile->guessExtension();
+ 
+                 // Move the file to the directory where brochures are stored
+                 try {
+                    
+                     $pictureFile->move(
+                         $this->getParameter('brochures_directory'),
+                         $newFilename
+                     );
+                     $game->setPicture($newFilename);
+
+                 } catch (FileException $e) {
+                     echo "image echoué";
+                 }
+ 
+                 // updates the 'brochureFilename' property to store the PDF file name
+                 // instead of its contents
+                 
+                
+            }else{
+                $game->setPicture(
+                    new File($this->getParameter('brochures_directory').$game->getPicture())
+                );
+            }
+
+            $game = $form->getData();       
+            $game->setUser($this->getUser());
+            $em->persist($game);
+            $em->flush();
+        }
+        return $this->render('game/edit.html.twig', [
+            'form' => $form
+        ]);   
+   }
+    
+ 
+
+
+
 } 
 
