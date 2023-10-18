@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Game;
+use App\Entity\Category;
 use App\Form\GameType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,9 +22,12 @@ class GameController extends AbstractController
     {
         $games = $em->getRepository(Game::class);
         $game = $games->findAll();
+        $categories = $em->getRepository(Category::class);
+        $category = $categories->findAll();
 
         return $this->render('game/index.html.twig', [
             'games' => $game,
+            'categories' => $category,
         ]);
 
     }
@@ -33,6 +37,8 @@ class GameController extends AbstractController
     public function addGame(Request $request, EntityManagerInterface $em, SluggerInterface $slugger): Response
     {
         $game = new Game();
+        $categories = $em->getRepository(Category::class);
+        $category = $categories->findAll();
         $form = $this->createForm(GameType::class, $game);
         $form-> handleRequest($request);
 
@@ -70,7 +76,8 @@ class GameController extends AbstractController
                 }
             }
             return $this->render('game/new.html.twig', [
-                'form' => $form
+                'form' => $form,
+                'categories' => $category,
             ]);   
    }
 
@@ -79,8 +86,11 @@ class GameController extends AbstractController
     {
         $games = $em->getRepository(Game::class);
         $game = $games->find($id);
+        $categories = $em->getRepository(Category::class);
+        $category = $categories->findAll();
         return $this->render('game/show.html.twig', [
             'game' => $game,
+            'categories' => $category,
 
         ]);
     }
@@ -90,6 +100,8 @@ class GameController extends AbstractController
     {
         $games = $em->getRepository(Game::class) ;
         $game = $games->find($id);
+        $categories = $em->getRepository(Category::class);
+        $category = $categories->findAll();
         $form = $this->createForm(GameType::class, $game);
         $form->handleRequest($request);
 
@@ -127,7 +139,8 @@ class GameController extends AbstractController
             return $this->redirectToRoute('app_game');
         }
         return $this->render('game/edit.html.twig', [
-            'form' => $form
+            'form' => $form,
+            'categories' => $category,
         ]);   
    }
 

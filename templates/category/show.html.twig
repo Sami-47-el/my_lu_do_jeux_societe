@@ -1,39 +1,34 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}
-    Categories
-{% endblock %}
+{% block title %}Détails du bien{% endblock %}
 
 {% block body %}
-    <h1>
-        Categories
-    </h1>
-    <table>
-        <tr>
-            <th>
-                id
-            </th>
-            <td>
-                {{ category.id }}
-            </td>
-        </tr>
-        <tr>
-        <th>
-                name
-            </th>
-            <td>
-                {{ category.name }}
-            </td>
-        </tr>
-    </table>
-    <a href="{{ path("app_category_index") }}">
-        Retour à la liste
-    </a>
-    <a href="{{ path("app_category_edit", {'id':category.id}) }}">
-         Modifier la liste
-    </a>
-     <a href="{{ path("app_category_delete", {'id':category.id}) }}">
-         Supprimer la liste
-    </a>
-    {{include("category/delete/{id}")}}
+  <h1 class="text-center">Détails du jeu</h1>
+  {% for game in category.games %}
+  <article class="container">
+      <div class="card text-center mt-5">
+        <div class="card-header">
+          Location
+        </div>
+        <div class="card-body">
+          <h5 class="card-title">{{ game.name }}</h5>
+          <h5 class="card-title"> Type : {{ game.content }}</h5>
+          <address class="card-text">{{ game.description }}</address>
+          <p class="card-text">{{ game.date | format_date(locale='fr') }}</p>
+          <img class='w-2 h-2' src="/Uploads/{{ game.picture }}">
+          <p> {{game.players}}</p> 
+          <p> {{game.age}}</p>  
+          <p> {{game.time}}</p>  
+          <p> {{game.link}}</p> 
+          {% for categorie in game.category %}
+              <p class="card-text">{{ categorie }}</p>
+          {% endfor %} 
+        </div>
+        <div>
+         <a href="/game/" type="button" class="btn btn-primary mt-1">Retour</a>
+         <a href="/game/edit/{{game.id}}" type="button" class="btn btn-primary mt-1">Modifier</a>
+         <a href="/game/delete/{{game.id}}" type="button" class="btn btn-primary mt-1">Supprimer</a>
+        </div>
+ </article>
+ {% endfor %}     
 {% endblock %}

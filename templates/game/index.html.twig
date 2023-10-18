@@ -17,6 +17,9 @@
               <p class="card-text">{{ game.age }}</p>
               <p class="card-text">{{ game.time }}</p>
               <p class="card-text">{{ game.link }}</p>
+              {% for categorie in game.category %}
+              <p class="card-text">{{ categorie }}</p>
+              {% endfor %}
              <a href="/game/{{game.id}}" type="button" class="btn btn-primary">Détails</a><br>
             </div>
         </div>
