@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Entity;
-
+use Symfony\Component\Validator\Constraints as Assert;
 use App\Repository\LoanRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -14,9 +14,15 @@ class Loan
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Assert\Range(
+        min: 'first day of January',
+        max: 'first day of January next year',
+    )]
+    #[Assert\GreaterThan('today')]
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $date_start = null;
-
+    
+    #[Assert\GreaterThan(propertyPath: 'date_start')]
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $date_end = null;
 

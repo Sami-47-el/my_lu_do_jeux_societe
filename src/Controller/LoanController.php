@@ -6,6 +6,7 @@ use App\Entity\Category;
 use App\Entity\Loan;
 use App\Entity\Game;
 use App\Form\LoanType;
+use App\Repository\LoanRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,9 +26,17 @@ class LoanController extends AbstractController
     // }
 
     #[Route('/loan/{id}', name: 'app_loan')]
-    public function loannig(Request $request, EntityManagerInterface $em, INT $id): Response
+    public function loannig(Request $request, EntityManagerInterface $em, LoanRepository $loanRepository , INT $id): Response
     {
         $loan = new Loan();
+        $loans = $loanRepository->findAll();
+        $dateReserve = [];
+        foreach ($loans as $loan) {
+            $dateReserve[] = [
+                'date_start' => $loan->getDateStart(),
+                'date_end' => $loan->getDateEnd(),
+            ];
+        }
         $form = $this->createForm(LoanType::class, $loan);
         $form-> handleRequest($request);
         $games = $em->getRepository(Game::class);
@@ -46,6 +55,16 @@ class LoanController extends AbstractController
         return $this->render('loan/index.html.twig', [
             'form' => $form,
             'categories' => $category,
+            'dateReserve' => $dateReserve,
         ]);
+    }
+    public function validate($value, Constraint $constraint)
+    {
+        $dateStart = $value['date_start'];
+
+        $
+$dateEnd = $value['date_end'];
+
+        if ($dateStart > $dateEnd){}
     }
 }
