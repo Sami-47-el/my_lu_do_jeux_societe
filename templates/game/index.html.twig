@@ -12,6 +12,7 @@
           <img src="Uploads/{{ game.picture }}">
             <div class="card-body">
               <h5 class="card-title">{{ game.name }}</h5>
+              <h5 class="card-title">id user : {{ game.id }}</h5>
               <p class="card-text">{{ game.date | format_date(locale='fr') }}</p>
               <p class="card-text"> {{ game.players }}</p>
               <p class="card-text">{{ game.age }}</p>

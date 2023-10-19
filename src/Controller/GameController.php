@@ -98,6 +98,7 @@ class GameController extends AbstractController
     #[Route('/game/edit/{id}', name:'app_game_edit')]
     public function update(Request $request, EntityManagerInterface $em,  int $id , SluggerInterface $slugger): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_USER');
         $games = $em->getRepository(Game::class) ;
         $game = $games->find($id);
         $categories = $em->getRepository(Category::class);

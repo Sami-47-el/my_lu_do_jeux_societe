@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello LoanController!{% endblock %}
+
+{% block body %}
+<h1>Locatin de jeux</h1>
+<form action='{{path('app_loan')}}' method='post'>
+    <label>Date de debut : </label>
+    <input type='date'></input>
+    <label>Date de fin : </label>
+    <input type='date'></input>
+</form>
+{% endblock %}

@@ -27,9 +27,9 @@
           <a class="nav-link" href="/game/new">New game</a>
         </li>
 
-       <li class="nav-item dropdown">
-       <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-         Add category
+       {# <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+           Add category
           </a>
           <a class="nav-link dropdown-toggle" href="/category/new">New category</a>
           <ul class="dropdown-menu">
@@ -37,7 +37,18 @@
                 <a class="dropdown-item" href="/category/edit">Edit category</a>
             </li>
           </ul>
+        </li> #}
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Add category
+          </a>
+          <ul class="dropdown-menu">
+          <a class="dropdown-item" href="/category/new">New category</a>
+          <a class="dropdown-item" href="/category/edit">Edit category</a> 
+          </ul>
         </li>
+
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
         Catégorie
@@ -48,6 +59,21 @@
            {% endfor %}
           </ul>
         </li>
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Mon compte
+          </a>
+          <ul class="dropdown-menu">
+          <a class='nav-link' href='/register'>Register</a>
+          <a class='nav-link' href='/login'>login</a>
+          <a class='nav-link' href='/logout'>Logout</a>
+            
+          </ul>
+        </li>
+        {# <li>
+          <a class='nav-link' href='/logout'>Logout</a>
+        </li> #}
       </ul>
       <form class="d-flex" role="search">
         <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">

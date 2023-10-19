@@ -11,6 +11,7 @@
         </div>
         <div class="card-body">
           <h5 class="card-title">{{ game.name }}</h5>
+              <h5 class="card-title">id user : {{ game.id }}</h5>
           <h5 class="card-title"> Type : {{ game.content }}</h5>
           <address class="card-text">{{ game.description }}</address>
           <p class="card-text">{{ game.date | format_date(locale='fr') }}</p>
@@ -23,10 +24,12 @@
               <p class="card-text">{{ categorie }}</p>
           {% endfor %} 
         </div>
-        <div>
          <a href="/game/" type="button" class="btn btn-primary mt-1">Retour</a>
+        {% if is_granted('ROLE_USER') %}
+        <div>
          <a href="/game/edit/{{game.id}}" type="button" class="btn btn-primary mt-1">Modifier</a>
          <a href="/game/delete/{{game.id}}" type="button" class="btn btn-primary mt-1">Supprimer</a>
         </div>
+        {% endif %}
   </article>      
 {% endblock %}
