@@ -26,6 +26,7 @@ class CategoryController extends AbstractController
     #[Route('/new', name:'app_category_new', methods:['GET', 'POST'])]
     public function addCategory(Request $request, EntityManagerInterface $em): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $category = new Category();
         $form = $this->createForm(CategoryType::class, $category);
         $form->handleRequest($request);
@@ -54,8 +55,9 @@ class CategoryController extends AbstractController
     }
 
     #[Route('/edit/{id}', name: 'app_category_edit', methods:['GET', 'POST'])]
-    public function editCategory(Request $request, category $category, EntityManagerInterface $em, int $id): Response
+    public function editCategory(Request $request, Category $category, EntityManagerInterface $em, int $id): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $form = $this->createForm(CategoryType::class, $category);
         $form->handleRequest($request);
         $categories = $em->getRepository(Category::class)->findAll();
@@ -74,6 +76,7 @@ class CategoryController extends AbstractController
     #[Route('delete/{id}', name: 'app_category_delete', methods:['POST'])]
     public function deleteCategory(Request $request, category $category, EntityManagerInterface $em): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         if($this->isCsrfTokenValid('delete' . $category->getId(), $request->request->get('_token'))) {
             $em->remove($category);
             $em->flush();
