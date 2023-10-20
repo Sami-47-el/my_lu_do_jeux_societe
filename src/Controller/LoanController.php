@@ -26,45 +26,66 @@ class LoanController extends AbstractController
     // }
 
     #[Route('/loan/{id}', name: 'app_loan')]
-    public function loannig(Request $request, EntityManagerInterface $em, LoanRepository $loanRepository , INT $id): Response
-    {
-        $loan = new Loan();
-        $loans = $loanRepository->findAll();
-        $dateReserve = [];
-        foreach ($loans as $loan) {
-            $dateReserve[] = [
-                'date_start' => $loan->getDateStart(),
-                'date_end' => $loan->getDateEnd(),
-            ];
+public function loannig(Request $request, EntityManagerInterface $em, LoanRepository $loanRepository , INT $id): Response
+{
+    $loan = new Loan();
+    $loans = $loanRepository->findAll();
+    $dateReserve = [];
+
+    foreach ($loans as $existingLoan) {
+        $dateReserve[] = [
+            'date_start' => $existingLoan->getDateStart(),
+            'date_end' => $existingLoan->getDateEnd(),
+        ];
+    }
+
+    $form = $this->createForm(LoanType::class, $loan);
+    $form->handleRequest($request);
+
+    $games = $em->getRepository(Game::class);
+    $game = $games->find($id);
+    $categories = $em->getRepository(Category::class);
+    $category = $categories->findAll();
+
+    if ($form->isSubmitted() && $form->isValid()) {
+        $loanData = $form->getData();
+        $loanData->setUser($this->getUser());
+        $loanData->setGame($game);
+
+        // Vérifier la disponibilité du jeu en comparant les dates
+        $canReserve = true;
+
+        foreach ($dateReserve as $date) {
+            $startDate = $date['date_start'];
+            $endDate = $date['date_end'];
+
+            if ($loanData->getDateStart() >= $startDate && $loanData->getDateStart() <= $endDate) {
+                $canReserve = false;
+                break;
+            }
+
+            if ($loanData->getDateEnd() >= $startDate && $loanData->getDateEnd() <= $endDate) {
+                $canReserve = false;
+                break;
+            }
         }
-        $form = $this->createForm(LoanType::class, $loan);
-        $form-> handleRequest($request);
-        $games = $em->getRepository(Game::class);
-        $game = $games->find($id);
-        $categories = $em->getRepository(Category::class);
-        $category = $categories->findAll();
-        
-        if ($form->isSubmitted() && $form->isValid()){
-            $loan = $form->getData();
-            $loan->setUser($this->getUser());
-            $loan->setGame($game);
-            $em->persist($loan);
+
+        if ($canReserve) {
+            $em->persist($loanData);
             $em->flush();
-            return $this->redirectToRoute('app_game'); 
+            return $this->redirectToRoute('app_game');
+        } else {
+            // Informer l'utilisateur que le jeu n'est pas disponible pour les dates spécifiées
+            $this->addFlash('warning', 'Le jeu n\'est pas disponible pour ces dates.');
+            return $this->redirectToRoute('app_game_show',['id'=>$id]);
         }
-        return $this->render('loan/index.html.twig', [
-            'form' => $form,
-            'categories' => $category,
-            'dateReserve' => $dateReserve,
-        ]);
     }
-    public function validate($value, Constraint $constraint)
-    {
-        $dateStart = $value['date_start'];
 
-        $
-$dateEnd = $value['date_end'];
-
-        if ($dateStart > $dateEnd){}
-    }
+    return $this->render('loan/index.html.twig', [
+        'form' => $form->createView(),
+        'categories' => $category,
+        'dateReserve' => $dateReserve,
+    ]);
+}
+   
 }

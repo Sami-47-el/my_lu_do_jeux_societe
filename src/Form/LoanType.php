@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Loan;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -13,8 +14,12 @@ class LoanType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('date_start')
-            ->add('date_end')
+        ->add('date_start', DateType::class, [
+            'data' => new \DateTime(), // Initialise la date du jour
+        ])
+            ->add('date_end', DateType::class, [
+                'data' => new \DateTime('+ 5 days'), // Initialise la date du jour
+            ])
             ->add('save', SubmitType::class)
         ;
     }

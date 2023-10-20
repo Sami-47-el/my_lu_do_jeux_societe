@@ -24,16 +24,21 @@
               <p class="card-text">{{ categorie }}</p>
           {% endfor %} 
           {% for loan in game.loans %}
-              <p class="card-text">ce jeu est loué jusque : {{ loan.dateEnd | format_date(locale='fr') }}</p>
+              <p class="card-text">ce jeu est loué du : {{ loan.dateStart | format_date(locale='fr') }} au {{ loan.dateEnd | format_date(locale='fr') }}</p>
           {% endfor %} 
         </div>
          <a href="/game/" type="button" class="btn btn-primary mt-1">Retour</a>
-        {% if is_granted('ROLE_USER') %}
+        {% if is_granted('ROLE_USER')%}
         <div>
+        {% if game.user == app.user %}
          <a href="/game/edit/{{game.id}}" type="button" class="btn btn-primary mt-1">Modifier</a>
          <a href="/game/delete/{{game.id}}" type="button" class="btn btn-primary mt-1">Supprimer</a>
+         {% endif %}
          <a href="/loan/{{game.id}}" type="button" class="btn btn-primary mt-1">Louer</a>
         </div>
+        {% else %}
+        <span>Vous devez être connecté pour loué un jeu</span>
         {% endif %}
+        
   </article>      
 {% endblock %}
